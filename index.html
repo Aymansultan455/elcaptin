@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#ffffff">
+<title>توصيلة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light only;
+  --bg:#f4f6f8; --card:#ffffff; --text:#1c2430; --muted:#6b7684; --border:#e4e8ed;
+  --brown:#5a3a22; --brown-d:#3d2716; --primary:#ff7a2d; --primary-d:#e35f10; --accent:#0fae6b;
+  --field-bg:#f3ead6; --navy:#0a1a3f; --blue:#2f80ed;
+  --shadow:0 6px 20px rgba(20,20,40,.08);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow-x:hidden}
+.wrap{max-width:640px;margin:0 auto;padding:0 14px 50px}
+header.top{position:sticky;top:0;padding-top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(135deg,var(--brown),var(--brown-d))}
+.top-inner{max-width:640px;margin:0 auto;padding:16px;display:flex;align-items:center;justify-content:center}
+@keyframes neonColor{
+  0%{color:#fff;text-shadow:0 0 8px #fff,0 0 22px #fff}
+  20%{color:#3b82f6;text-shadow:0 0 8px #3b82f6,0 0 22px #3b82f6}
+  45%{color:#cfe8ff;text-shadow:0 0 8px #cfe8ff,0 0 22px #cfe8ff}
+  70%{color:#e8d5b7;text-shadow:0 0 8px #e8d5b7,0 0 22px #e8d5b7}
+  90%{color:#ffd400;text-shadow:0 0 8px #ffd400,0 0 22px #ffd400}
+  100%{color:#fff;text-shadow:0 0 8px #fff,0 0 22px #fff}
+}
+.neon{font-weight:900;font-size:clamp(40px,13vw,84px);letter-spacing:1px;animation:neonColor 7s linear infinite;line-height:1.05;position:relative;display:inline-block}
+.title-block{position:relative;display:inline-block;animation:ride 1s ease-in-out infinite;margin-bottom:40px}
+.wheel{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#888,#111 70%);border:3px solid #eee;position:relative;animation:spin .5s linear infinite}
+.wheel::after{content:'';position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(#ccc 0 20deg,#333 20deg 40deg)}
+@keyframes spin{to{transform:rotate(-360deg)}}
+@keyframes ride{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.wheel-peek{position:absolute;top:100%;transform:translateX(-50%);width:44px;height:33px;overflow:hidden;margin-top:-3px}
+.wheel-peek .wheel{margin-top:-11px}
+.wp1{left:90%}.wp2{left:56%}.wp3{left:20%}
+.tabs{display:flex;gap:6px;max-width:640px;margin:0 auto;padding:0 10px 10px}
+.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:12.5px;font-weight:800;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;user-select:none}
+.tab.active{background:#fff;color:var(--brown-d)}
+.ticker{position:relative;height:38px;overflow:hidden;background:var(--navy);direction:ltr}
+.ticker-track{position:absolute;top:0;left:0;height:38px;line-height:38px;white-space:nowrap;direction:rtl;color:#fff;font-weight:800;font-size:14px;animation:marquee 30s linear infinite;will-change:transform}
+@keyframes marquee{from{transform:translateX(-100%)}to{transform:translateX(var(--tk-from,100vw))}}
+textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--field-bg)!important;color:#000!important;font-family:inherit;font-size:14px}
+.hl{position:absolute;left:-18px;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle,#fff,#ffe680 55%,#f5b800);box-shadow:0 0 8px 3px rgba(255,235,120,.95),0 0 22px 9px rgba(255,220,80,.55);animation:hlPulse 1.2s ease-in-out infinite alternate}
+.hl::before{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);width:clamp(60px,22vw,130px);height:48px;background:linear-gradient(to left,rgba(255,244,170,.6),transparent);clip-path:polygon(100% 42%,0 0,0 100%,100% 58%)}
+.hl1{top:34%}.hl2{top:62%}
+@keyframes hlPulse{from{opacity:.75;filter:brightness(.9)}to{opacity:1;filter:brightness(1.3)}}
+.panel{display:none}
+.panel.active{display:block}
+.slider{overflow:hidden;border-radius:16px;margin:14px 0;box-shadow:var(--shadow);background:var(--card)}
+.slider-track{display:flex;transition:transform .5s ease}
+.slide{min-width:100%;padding:38px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;background:linear-gradient(135deg,var(--primary),#ffb066);color:#fff}
+.slide .ic{font-size:88px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25));display:flex;align-items:center;justify-content:center;height:130px;width:130px}
+.slide .ic img{width:130px;height:130px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.35));animation:vehFloat 3s ease-in-out infinite}
+@keyframes vehFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+.slide b{font-size:26px}
+.slide small{opacity:.9;font-size:15px}
+.dots{display:flex;justify-content:center;gap:6px;padding:8px 0;background:var(--card)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.dot.on{background:var(--primary)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.deco-title{text-align:center;font-size:24px;font-weight:900;color:var(--primary-d);margin:2px 0 14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.field .row{display:flex;gap:6px}
+input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--field-bg)!important;color:#000!important;font-family:inherit;font-size:14px}
+.seg{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg div{flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:700;font-size:14px;background:#c9f2d9;color:#0a4a2c}
+.seg div.on{background:var(--accent);color:#fff}
+.gps-btn{padding:11px 12px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;white-space:nowrap;cursor:pointer}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--navy)!important;color:#fff!important;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 6px 16px rgba(255,122,45,.4)}
+.btn2{width:auto;padding:9px 16px;border:none;border-radius:9px;background:var(--navy)!important;color:#fff!important;font-weight:800;font-family:inherit;cursor:pointer}
+.btn-out{background:transparent!important;border:1px solid var(--border);color:var(--text)!important}
+.btn-danger{background:#e5484d!important}
+.small-note{font-size:12px;color:var(--muted);margin-top:4px}
+.resp{border-radius:14px;padding:12px;color:#fff;margin-bottom:10px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow)}
+.resp img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #fff}
+.resp .info{flex:1}
+.resp .fare{font-weight:900;font-size:16px}
+.resp .time{font-size:11px;opacity:.85;margin-top:2px}
+.resp button{background:#fff2;border:1px solid #fff5;color:#fff;border-radius:8px;padding:6px 12px;font-weight:800;cursor:pointer}
+.order-item{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.order-item .route{font-weight:800}
+.order-item .meta{font-size:12px;color:var(--muted);margin:4px 0 8px}
+.accept-row{display:flex;gap:6px}
+.accept-row input{flex:1}
+.thumb{width:34px;height:34px;border-radius:8px;object-fit:cover}
+.veh-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.veh-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center}
+.veh-card img{width:100%;height:80px;object-fit:cover;border-radius:10px;margin-bottom:6px}
+.modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:60;padding:14px}
+.modal-bg.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:18px;width:100%;max-width:420px;max-height:88vh;overflow:auto}
+.actions-row{display:flex;gap:8px;margin-top:14px}
+.fab{position:fixed;bottom:18px;right:18px;width:52px;height:52px;border-radius:50%;background:var(--brown-d);color:#fff;font-size:22px;border:none;box-shadow:var(--shadow);z-index:30;cursor:pointer}
+.fab-badge{position:absolute;top:-4px;left:-4px;background:#e5484d;color:#fff;font-size:12px;font-weight:900;min-width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.admin-tabs{display:flex;gap:6px;margin-bottom:12px}
+.admin-tabs div{flex:1;text-align:center;padding:8px;border-radius:9px;background:var(--bg);border:1px solid var(--border);cursor:pointer;font-weight:800;font-size:13px}
+.admin-tabs div.on{background:var(--brown);color:#fff}
+.req-row{display:flex;gap:6px;margin-top:8px}
+.footer-sign{text-align:center;padding:20px 14px;color:#fff;font-size:13px;background:var(--brown);border-radius:14px;margin-top:10px}
+.footer-sign b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
+.footer-sign a{color:#ffd400;text-decoration:none;font-weight:700}
+.req-mark{color:#e5484d;font-size:11px;font-weight:800}
+.appr{background:#eafaf1;color:#0a3d24;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.7}
+.alarm{position:fixed;top:0;left:0;right:0;z-index:200;background:#e5484d;color:#fff;text-align:center;padding:16px;transform:translateY(-130%);transition:transform .3s}
+.alarm.show{transform:none;animation:alarmFlash .6s infinite alternate}
+.alarm .at{font-weight:900;font-size:18px}.alarm .ab{margin:4px 0 8px;font-size:14px}
+@keyframes alarmFlash{from{background:#e5484d}to{background:#a3121a}}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-30px);background:var(--navy);color:#fff;padding:14px 22px;border-radius:14px;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.35);z-index:100;opacity:0;transition:all .35s ease;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.icon-row{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--bg)}
+.icon-row .prev{width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:12px;font-size:36px;border:1px solid var(--border);flex-shrink:0}
+.icon-row .prev img{width:66px;height:66px;object-fit:contain}
+.icon-row .lbl{flex:1;font-weight:800}
+.icon-row .acts{display:flex;flex-direction:column;gap:5px}
+.icon-row .acts button{padding:6px 12px;border-radius:8px;border:none;font-weight:800;font-family:inherit;cursor:pointer;font-size:12px}
+.icon-row .acts .up{background:var(--accent);color:#fff}
+.icon-row .acts .rm{background:#e5484d;color:#fff}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="title-block">
+      <div class="neon">توصيلة</div>
+      <div class="hl hl1"></div><div class="hl hl2"></div>
+      <div class="wheel-peek wp1"><div class="wheel"></div></div>
+      <div class="wheel-peek wp2"><div class="wheel"></div></div>
+      <div class="wheel-peek wp3"><div class="wheel"></div></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-p="req">📱 اطلب الخدمة</div>
+    <div class="tab" data-p="cur">📋 الطلبات</div>
+    <div class="tab" data-p="addveh">🚘 المركبات</div>
+  </div>
+</header>
+
+<div class="ticker"><div class="ticker-track" id="tickerTrack">للسادة صاحبى المركبات ، لاستمرار ظهور مركبتك بالتطبيق واستمرارها فى تلقى الطلبات من المستخدمين يرجى مقابلة مدير التطبيق ومعك صورة شخصية من بطاقة الرقم القومى والتليفون المسجل بالتطبيق – لاجراء المقابلة اتصل 01011337320</div></div>
+
+<div class="wrap">
+
+<div class="slider"><div class="slider-track" id="track"></div></div>
+<div class="dots" id="dots"></div>
+
+<div class="panel active" id="panel-req">
+  <div class="card">
+    <div class="deco-title">✦ رايح فين؟ ✦</div>
+    <div class="field"><label>📍 مكانك الآن</label>
+      <div class="row" style="align-items:flex-start"><input id="from" placeholder="اكتب موقعك أو استخدم GPS"><div style="display:flex;flex-direction:column;align-items:center"><button class="gps-btn" id="gpsBtn" type="button">تحديد GPS</button><span style="margin-top:3px;font-size:12px;font-weight:800;color:#e35f10">قريبا</span></div></div>
+    </div>
+    <div class="field"><label>🎯 المكان المطلوب</label><input id="to" placeholder="اكتب وجهتك"></div>
+    <div class="field"><label>صفة المنقول</label>
+      <div class="seg" id="catSeg"><div class="on" data-c="people">👤 أشخاص</div><div data-c="goods">📦 بضائع</div></div>
+    </div>
+    <div class="field"><label>نوع المركبة</label><select id="vType"></select></div>
+    <div class="field"><label>💰 الأجرة المقترحة (أرقام فقط)</label><input id="fare" inputmode="numeric" placeholder="مثال: 50"></div>
+    <button class="btn" id="sendBtn">🚀 ارسل الطلب</button>
+    <div class="small-note" id="sendStatus"></div>
+  </div>
+  <div id="responsesWrap"></div>
+</div>
+
+<div class="panel" id="panel-cur">
+  <h3 style="text-align:center">الطلبات الواردة من مستخدمى التطبيق</h3>
+  <div class="small-note" style="text-align:center;margin-bottom:8px">🔔 أبقِ التطبيق مفتوحًا ليصلك تنبيه صوتي عند وصول طلب جديد. للموافقة اكتب رقم تليفونك المسجل بجانب الطلب.</div>
+  <div id="curOrders"></div>
+</div>
+
+<div class="panel" id="panel-addveh">
+  <div class="card" style="text-align:center">
+    <p style="font-weight:900;font-size:19px;margin-bottom:8px">عزيزى صاحب المركبة</p>
+    <p>سجّل مركبتك (توكتوك – تروسيكل – سيارة – نقل – نصف نقل – اتوبيس رحلات .... الخ) لتكون متاحة لطلبات مستخدمى التطبيق</p>
+    <button class="btn2" id="openAddVehBtn">➕ إضافة مركبة جديدة</button>
+    <div class="small-note" id="reqStatus"></div>
+  </div>
+  <div class="veh-grid" id="vehGrid"></div>
+</div>
+
+<div class="footer-sign">
+  تطبيق توصيلة للنقل — جمهورية مصر العربية<br>
+  برمجة وتصميم وتطوير<br>
+  <b>Eng. Ayman Fatouh Sultan</b>
+  📞 <a href="tel:01011337320">01011337320</a> &nbsp;|&nbsp; 💬 <a href="https://wa.me/201011337320" target="_blank">واتساب</a>
+</div>
+<div class="toast" id="toast"></div>
+<div class="alarm" id="alarmBox"><div class="at"></div><div class="ab"></div><button class="btn2" onclick="stopAlarm()">إيقاف التنبيه</button></div>
+
+</div>
+
+<button class="fab" id="fabAdmin">⚙️<span class="fab-badge" id="fabBadge" style="display:none">0</span></button>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3 id="modalTitle">إضافة مركبة</h3>
+    <input type="hidden" id="vId"><input type="hidden" id="vMode" value="request">
+    <div class="field"><label>اسم المالك <span class="req-mark">(مطلوب)</span></label><input id="vName"></div>
+    <div class="field"><label>رقم الهاتف / واتساب <span class="req-mark">(مطلوب)</span></label><input id="vPhone"></div>
+    <div class="field"><label>العنوان</label><input id="vAddr"></div>
+    <div class="field"><label>رقم البطاقة <span class="req-mark">(مطلوب)</span></label><input id="vCard"></div>
+    <div class="field"><label>نوع المركبة <span class="req-mark">(مطلوب)</span></label><select id="vTypeSel"></select></div>
+    <div class="field"><label>صورة سيلفي واضحة للمركبة وصاحبها <span class="req-mark">(مطلوب)</span></label>
+      <input type="file" accept="image/*" capture="user" id="vSelfieImg" style="display:none">
+      <button type="button" class="btn2" id="selfieBtn" style="width:100%">📸 صور الآن</button>
+      <img id="selfiePreview" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px">
+    </div>
+    <div class="actions-row">
+      <button class="btn2" id="saveVehBtn" style="flex:1">حفظ</button>
+      <button class="btn2 btn-out" id="closeModalBtn" style="flex:1">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="pwBg">
+  <div class="modal" style="max-width:320px;text-align:center">
+    <h3>دخول مدير التطبيق</h3>
+    <input type="password" id="pwInput" placeholder="كلمة المرور">
+    <div class="actions-row"><button class="btn2" id="pwOkBtn" style="flex:1">دخول</button><button class="btn2 btn-out" id="pwCancelBtn" style="flex:1">إلغاء</button></div>
+    <div class="small-note" id="pwErr" style="color:#e5484d"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="adminBg">
+  <div class="modal" style="max-width:560px">
+    <h3>لوحة تحكم مدير التطبيق</h3>
+    <div class="admin-tabs">
+      <div class="on" data-a="main">الطلبات والمركبات</div>
+      <div data-a="tk">📢 الشريط النصي</div>
+      <div data-a="ic">🎨 أيقونات المركبات</div>
+    </div>
+
+    <div id="adminMain">
+      <h4 style="margin:4px 0 10px">الطلبات المرسلة</h4>
+      <button class="btn2 btn-danger" id="clearOrdersBtn" style="width:100%;margin-bottom:8px">🗑️ مسح كل الطلبات</button>
+      <div id="adminOrdersPanel" style="max-height:220px;overflow:auto;margin-bottom:16px"></div>
+      <h4 style="margin:4px 0 10px">المركبات المسجلة</h4>
+      <div id="adminReqPanel"></div>
+    </div>
+
+    <div id="adminTicker" style="display:none">
+      <div class="field"><label>نص الشريط</label><textarea id="tkText" rows="5"></textarea></div>
+      <div class="field"><label>سرعة الحركة: <b id="tkSpeedVal">5</b> / 10 <span class="small-note">(1 بطيء — 10 سريع)</span></label><input type="range" id="tkSpeed" min="1" max="10" value="5" style="padding:0"></div>
+      <div class="actions-row"><button class="btn2" id="tkSaveBtn" style="flex:1">💾 حفظ الشريط</button><button class="btn2 btn-out" id="tkResetBtn" style="flex:1">استعادة الأصل</button></div>
+      <div class="small-note" id="tkMsg"></div>
+    </div>
+
+    <div id="adminIcons" style="display:none">
+      <div class="small-note" style="margin-bottom:10px">ارفع صورة واضحة لكل مركبة (PNG بخلفية شفافة يُفضّل). يتم تصغير الصورة تلقائياً. ستظهر فوراً في البنر المتحرك.</div>
+      <div id="iconList"></div>
+      <div class="small-note" id="icMsg"></div>
+    </div>
+
+    <div class="actions-row"><button class="btn2 btn-out" id="closeAdminBtn" style="flex:1">إغلاق</button></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PW='AS-ayman';
+const VTYPES={
+  tuktuk:{label:'توك توك',cat:'people',icon:'🛺'},
+  microbus:{label:'ميكروباص',cat:'people',icon:'🚌'},
+  malaky:{label:'سيارة ملاكي',cat:'people',icon:'🚗'},
+  agra:{label:'سيارة أجرة',cat:'people',icon:'🚕'},
+  trisikl:{label:'تروسيكل',cat:'goods',icon:'🛵'},
+  nisf:{label:'نصف نقل',cat:'goods',icon:'🚚'},
+  naql:{label:'نقل',cat:'goods',icon:'🚛'},
+};
+const COLORS=['#0fae6b','#3b82f6','#f59e0b','#e5484d','#8b5cf6','#0891b2'];
+const DEFAULT_TICKER='للسادة صاحبى المركبات ، لاستمرار ظهور مركبتك بالتطبيق واستمرارها فى تلقى الطلبات من المستخدمين يرجى مقابلة مدير التطبيق ومعك صورة شخصية من بطاقة الرقم القومى والتليفون المسجل بالتطبيق – لاجراء المقابلة اتصل 01011337320';
+
+/* ===== أيقونات مخصصة ===== */
+let customIcons={};
+function loadCustomIcons(){ try{ customIcons=JSON.parse(localStorage.getItem('tawsila_icons')||'{}'); }catch(e){ customIcons={}; } }
+function saveCustomIcons(){ try{ localStorage.setItem('tawsila_icons', JSON.stringify(customIcons)); return true; }catch(e){ return false; } }
+function getIconHTML(key){ const v=VTYPES[key]; if(!v) return ''; return customIcons[key] ? `<img src="${customIcons[key]}" alt="${v.label}">` : v.icon; }
+loadCustomIcons();
+
+/* ===== Mock DB ===== */
+class MockDoc{
+  constructor(col,id,data){this.collection=col;this.id=id;this._data=data||{};this.path=col+'/'+id;}
+  data(){return JSON.parse(JSON.stringify(this._data));}
+  async update(patch){Object.assign(this._data,patch);saveDB();notify(this.collection);}
+  async delete(){DB[this.collection]=(DB[this.collection]||[]).filter(d=>d.id!==this.id);saveDB();notify(this.collection);}
+  collection(name){return new MockCollection(this.collection+'_'+this.id+'_'+name);}
+}
+class MockCollection{
+  constructor(name){this.name=name;}
+  doc(id){const found=(DB[this.name]||[]).find(d=>d.id===id);const d=new MockDoc(this.name,id,found?found.data:{});d.set=async(data)=>{const ex=(DB[this.name]||[]).find(x=>x.id===id);if(ex){Object.assign(ex.data,data);}else{if(!DB[this.name])DB[this.name]=[];DB[this.name].push({id,data});}saveDB();notify(this.name);};return d;}
+  async add(data){const id='id_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);if(!DB[this.name])DB[this.name]=[];DB[this.name].push({id,data});saveDB();notify(this.name);return new MockDoc(this.name,id,data);}
+  orderBy(){return this;}
+  limit(){return this;}
+  where(field,op,val){this._filter={field,op,val};return this;}
+  async get(){let items=(DB[this.name]||[]).map(d=>new MockDoc(this.name,d.id,d.data));if(this._filter){const f=this._filter;items=items.filter(d=>{const v=d.data()[f.field];if(f.op==='==')return v===f.val;return true;});this._filter=null;}return{docs:items};}
+}
+const DB={orders:[],vehicles:[],settings:[]};
+function saveDB(){try{localStorage.setItem('tawsila_db',JSON.stringify(DB));}catch(e){console.warn(e);}}
+function loadDB(){try{const s=localStorage.getItem('tawsila_db');if(s){const p=JSON.parse(s);Object.assign(DB,p);}}catch(e){}}
+const listeners={};
+function notify(name){(listeners[name]||[]).forEach(cb=>{try{cb();}catch(e){console.error(e);}});}
+function onSnap(name,cb){if(!listeners[name])listeners[name]=[];listeners[name].push(cb);}
+MockCollection.prototype.onSnapshot=function(cb){const self=this;const run=()=>{self.get().then(snap=>cb(snap));};run();onSnap(this.name,run);return()=>{listeners[this.name]=(listeners[this.name]||[]).filter(f=>f!==run);};};
+loadDB();
+const db={collection(name){return new MockCollection(name);},doc(path){const[col,id]=path.split('/');const d=new MockDoc(col,id,(DB[col]||[]).find(x=>x.id===id)?.data||{});d.set=async(data)=>{const ex=(DB[col]||[]).find(x=>x.id===id);if(ex){Object.assign(ex.data,data);}else{if(!DB[col])DB[col]=[];DB[col].push({id,data});}saveDB();notify(col);};return d;}};
+
+/* ===== App ===== */
+let currentCat='people',myVehicle=null,respUnsub=null,curOrdersUnsub=null;
+let tickerCfg={text:DEFAULT_TICKER,speed:5};
+
+function initApp(){
+  buildSlider();buildVTypeSelects();wireTabs();wireOrderForm();wireAddVeh();wireAdmin();wireTickerAdmin();wireIconsAdmin();
+  resumeSession();applyTicker();
+  subscribeAdmin();subscribeCurOrders();subscribePublicVehicles();subscribeTicker();
+  if(document.fonts)document.fonts.ready.then(applyTicker);
+  window.addEventListener('resize',applyTicker);
+}
+initApp();
+
+function applyTicker(){
+  const tr=document.getElementById('tickerTrack'),box=document.querySelector('.ticker');
+  if(!tr||!box)return;
+  tr.textContent=tickerCfg.text;
+  tr.style.animation='none';
+  const w=tr.offsetWidth,cw=box.offsetWidth,pps=30+tickerCfg.speed*20;
+  tr.style.setProperty('--tk-from',cw+'px');
+  void tr.offsetWidth;
+  tr.style.animation='marquee '+((cw+w)/pps).toFixed(1)+'s linear infinite';
+}
+function subscribeTicker(){
+  const setSnap=()=>{const d=(DB.settings||[]).find(s=>s.id==='ticker');if(d&&d.data&&d.data.text){tickerCfg={text:d.data.text,speed:Number(d.data.speed)||5};applyTicker();}};
+  setSnap();onSnap('settings',setSnap);
+}
+function fillTickerAdmin(){document.getElementById('tkText').value=tickerCfg.text;document.getElementById('tkSpeed').value=tickerCfg.speed;document.getElementById('tkSpeedVal').textContent=tickerCfg.speed;}
+
+let alarmCtx=null,alarmTimer=null;
+function unlockAudio(){try{alarmCtx=alarmCtx||new(window.AudioContext||window.webkitAudioContext)();alarmCtx.resume();}catch(e){}try{if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}catch(e){}}
+document.addEventListener('click',unlockAudio,{once:true});
+function stopAlarm(){clearInterval(alarmTimer);document.getElementById('alarmBox').classList.remove('show');if(navigator.vibrate)navigator.vibrate(0);}
+function triggerAlarm(title,body){
+  const box=document.getElementById('alarmBox');box.querySelector('.at').textContent=title;box.querySelector('.ab').textContent=body;box.classList.add('show');
+  let n=0;clearInterval(alarmTimer);
+  const beep=()=>{if(alarmCtx){const o=alarmCtx.createOscillator(),g=alarmCtx.createGain();o.type='square';o.frequency.value=(n%2)?660:990;g.gain.value=.15;o.connect(g);g.connect(alarmCtx.destination);o.start();o.stop(alarmCtx.currentTime+.28);}if(++n>=24)stopAlarm();};
+  beep();alarmTimer=setInterval(beep,320);
+  if(navigator.vibrate)navigator.vibrate([400,200,400,200,400,200,800]);
+  try{if('Notification'in window&&Notification.permission==='granted')new Notification(title,{body});}catch(e){}
+}
+
+function wireTabs(){
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');document.getElementById('panel-'+t.dataset.p).classList.add('active');
+  });
+}
+function buildSlider(){
+  const track=document.getElementById('track'),dots=document.getElementById('dots');
+  const list=Object.keys(VTYPES);
+  track.innerHTML=list.map(k=>{const v=VTYPES[k];
+    return `<div class="slide"><div class="ic">${getIconHTML(k)}</div><b>${v.label}</b><small>${v.cat==='people'?'نقل أشخاص':'نقل بضائع'}</small></div>`;
+  }).join('');
+  dots.innerHTML=list.map((_,i)=>`<div class="dot ${i===0?'on':''}"></div>`).join('');
+  let i=0;clearInterval(window._sliderInt);
+  window._sliderInt=setInterval(()=>{i=(i+1)%list.length;track.style.transform=`translateX(${i*100}%)`;document.querySelectorAll('.dot').forEach((d,idx)=>d.classList.toggle('on',idx===i));},2600);
+}
+function refreshSliderIcons(){
+  const slides=document.querySelectorAll('#track .slide .ic');
+  const keys=Object.keys(VTYPES);
+  slides.forEach((el,i)=>{ el.innerHTML=getIconHTML(keys[i]); });
+}
+function buildVTypeSelects(){['vType','vTypeSel'].forEach(id=>{const sel=document.getElementById(id);sel.innerHTML=Object.entries(VTYPES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');});filterVTypeByCat();}
+function filterVTypeByCat(){const sel=document.getElementById('vType');sel.innerHTML=Object.entries(VTYPES).filter(([k,v])=>v.cat===currentCat).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');}
+
+function wireOrderForm(){
+  document.getElementById('catSeg').onclick=(e)=>{const d=e.target.closest('div[data-c]');if(!d)return;currentCat=d.dataset.c;document.querySelectorAll('#catSeg div').forEach(x=>x.classList.toggle('on',x===d));filterVTypeByCat();};
+  document.getElementById('fare').oninput=(e)=>e.target.value=e.target.value.replace(/[^0-9]/g,'');
+  document.getElementById('gpsBtn').onclick=()=>{
+    if(!navigator.geolocation){alert('GPS غير متاح');return;}
+    navigator.geolocation.getCurrentPosition(p=>{document.getElementById('from').value=`موقعي (${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)})`;},()=>alert('تعذر الوصول للموقع'));
+  };
+  document.getElementById('sendBtn').onclick=sendOrder;
+}
+async function sendOrder(){
+  const from=document.getElementById('from').value.trim(),to=document.getElementById('to').value.trim();
+  const vType=document.getElementById('vType').value,fare=document.getElementById('fare').value.trim();
+  const status=document.getElementById('sendStatus');
+  if(!from||!to||!vType){status.textContent='من فضلك أكمل كل الحقول.';return;}
+  status.textContent='...جارِ الإرسال';
+  try{
+    const ref=await db.collection('orders').add({from,to,category:currentCat,vehicleType:vType,suggestedFare:fare||null,createdAt:Date.now(),status:'open'});
+    localStorage.setItem('captain_last_order',ref.path);
+    status.innerHTML='<div style="font-weight:900;color:var(--accent);margin-bottom:6px">✅ تم إرسال الطلب</div><button class="btn2" id="orderOkBtn">موافق</button>';
+    document.getElementById('orderOkBtn').onclick=()=>{document.getElementById('from').value='';document.getElementById('to').value='';document.getElementById('fare').value='';status.innerHTML='';};
+    listenResponses(ref);
+  }catch(e){status.textContent='حدث خطأ أثناء الإرسال.';console.error(e);}
+}
+function listenResponses(orderRef){
+  if(respUnsub)respUnsub();
+  const wrap=document.getElementById('responsesWrap');wrap.innerHTML='<h3>ردود مالكي المركبات</h3>';
+  let first=true,count=0;
+  respUnsub=orderRef.collection('responses').orderBy('createdAt','asc').onSnapshot(snap=>{
+    wrap.innerHTML='<h3>ردود مالكي المركبات</h3>';
+    snap.docs.forEach((d,i)=>{
+      const r=d.data();const vt=VTYPES[r.vehicleType];const el=document.createElement('div');el.className='resp';el.style.background=r.color||COLORS[i%COLORS.length];
+      el.innerHTML=`<img src="${r.ownerPhoto||''}" onerror="this.style.display='none'"><div class="info">وافق على طلبك <b>${r.ownerName}</b><br>📞 ${r.phone||''}${vt?' — '+vt.label:''}${r.fare?'<br>باجرة <span class="fare">'+r.fare+' ج.م</span>':''}<div class="time">🕒 ${new Date(r.createdAt).toLocaleString('ar-EG')}</div></div><button>اوك</button>`;
+      el.querySelector('button').onclick=()=>el.remove();wrap.appendChild(el);
+    });
+    if(!first&&snap.docs.length>count){const r=snap.docs[snap.docs.length-1].data();triggerAlarm('✅ تمت الموافقة على طلبك','وافق '+r.ownerName+' — '+(r.phone||''));}
+    first=false;count=snap.docs.length;
+  });
+}
+function resumeSession(){const p=localStorage.getItem('captain_last_order');if(p){const chk=setInterval(()=>{if(db){clearInterval(chk);listenResponses(db.doc(p));}},300);}}
+
+let lastOrdersSnap=null,seenOrderIds=null,orderRespUnsubs=[];
+function normPhone(p){return String(p||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\s\-+()]/g,'').replace(/^0020/,'0').replace(/^20(?=1)/,'0');}
+function subscribeCurOrders(){
+  if(curOrdersUnsub)curOrdersUnsub();
+  curOrdersUnsub=db.collection('orders').orderBy('createdAt','asc').limit(500).onSnapshot(snap=>{
+    lastOrdersSnap=snap;
+    if(seenOrderIds&&localStorage.getItem('captain_is_owner')){
+      const myPath=localStorage.getItem('captain_last_order')||'';
+      snap.docs.forEach(d=>{const o=d.data();if(!seenOrderIds.has(d.id)&&Date.now()-o.createdAt<120000&&d.ref.path!==myPath)triggerAlarm('🚨 طلب جديد: '+(VTYPES[o.vehicleType]?.label||''),o.from+' ← '+o.to);});
+    }
+    seenOrderIds=new Set(snap.docs.map(d=>d.id));
+    renderOrders();
+  });
+}
+setInterval(()=>{document.querySelectorAll('#curOrders .order-item').forEach(el=>{if(Date.now()-Number(el.dataset.created)>=1800000)el.remove();});if(lastOrdersSnap)lastOrdersSnap.docs.forEach(d=>{if(Date.now()-d.data().createdAt>=1800000)d.ref.delete();});},30000);
+
+function renderOrders(){
+  orderRespUnsubs.forEach(u=>u&&u());orderRespUnsubs=[];
+  const wrap=document.getElementById('curOrders');wrap.innerHTML='';
+  const now=Date.now(),docs=[];
+  (lastOrdersSnap?.docs||[]).forEach(d=>{if(now-d.data().createdAt>=1800000)d.ref.delete();else docs.push(d);});
+  if(!docs.length){wrap.innerHTML='<div class="small-note">لا توجد طلبات حتى الآن.</div>';return;}
+  [...docs].reverse().forEach((d,i)=>{
+    const serial=docs.length-i,o=d.data();
+    const el=document.createElement('div');el.className='order-item';el.dataset.created=o.createdAt;
+    el.innerHTML=`<div style="font-weight:900;font-size:12px;color:${o.approved?'#0fae6b':'#e5484d'};margin-bottom:4px">${o.approved?'✅ تم قبول الطلب':'⏳ منتظر الموافقة'}</div>
+      <div class="route">#${serial} — ${VTYPES[o.vehicleType]?.icon||''} ${o.from} ← ${o.to}</div>
+      <div class="meta">${o.suggestedFare?('أجرة مقترحة: '+o.suggestedFare+' ج.م — '):''}📅 ${new Date(o.createdAt).toLocaleString('ar-EG')}</div>
+      <div class="accept-row"><input class="phIn" inputmode="numeric" placeholder="رقم تليفونك المسجل"><button class="btn2">موافق</button></div>
+      <div class="small-note errMsg" style="color:#e5484d"></div><div class="apprList"></div>`;
+    const phIn=el.querySelector('.phIn'),err=el.querySelector('.errMsg');
+    phIn.oninput=()=>phIn.value=phIn.value.replace(/[^0-9٠-٩+]/g,'');
+    el.querySelector('button').onclick=async()=>{
+      err.textContent='';const ph=normPhone(phIn.value);
+      if(!ph){err.textContent='اكتب رقم تليفونك المسجل.';return;}
+      let q=await db.collection('vehicles').where('phone','==',ph).limit(1).get();
+      if(!q.docs.length&&phIn.value.trim()!==ph)q=await db.collection('vehicles').where('phone','==',phIn.value.trim()).limit(1).get();
+      if(!q.docs.length){err.textContent='هذا الرقم غير مسجل كعميل معتمد. سجّل مركبتك أولاً من تبويب "المركبات".';return;}
+      const v=q.docs[0].data(),rs=await d.ref.collection('responses').get();
+      if(rs.docs.some(x=>x.data().phone===v.phone)){err.textContent='سبق أن وافقت على هذا الطلب.';return;}
+      await d.ref.collection('responses').add({ownerName:v.ownerName,phone:v.phone,vehicleType:v.vehicleType,ownerPhoto:v.personalPhoto||'',vehiclePhoto:v.vehiclePhoto||'',color:COLORS[rs.docs.length%COLORS.length],createdAt:Date.now()});
+      await d.ref.update({approved:true,approvedAt:Date.now()});
+      localStorage.setItem('captain_is_owner','1');phIn.value='';
+    };
+    orderRespUnsubs.push(d.ref.collection('responses').orderBy('createdAt','asc').onSnapshot(s=>{
+      el.querySelector('.apprList').innerHTML=s.docs.map((x,k)=>{const r=x.data(),vt=VTYPES[r.vehicleType]||{icon:'',label:''};
+        return `<div class="appr" style="border-right:5px solid ${r.color||COLORS[k%6]}">✅ وافق على طلبك <b>${r.ownerName}</b><br>📞 ${r.phone} — ${vt.icon} ${vt.label}<br>🕒 ${new Date(r.createdAt).toLocaleString('ar-EG')}</div>`;}).join('');
+    }));
+    wrap.appendChild(el);
+  });
+}
+
+function subscribePublicVehicles(){
+  const render=()=>{
+    const grid=document.getElementById('vehGrid');grid.innerHTML='';
+    (DB.vehicles||[]).forEach((d,i)=>{const v=d.data;
+      grid.innerHTML+=`<div class="veh-card"><img src="${v.vehiclePhoto||''}" onerror="this.style.display='none'"><b>#${i+1} ${v.ownerName}</b><div class="small-note">${VTYPES[v.vehicleType]?.label||''}</div></div>`;
+    });
+  };
+  render();onSnap('vehicles',render);
+}
+
+function wireAddVeh(){
+  document.getElementById('openAddVehBtn').onclick=()=>openVehModal('request');
+  document.getElementById('closeModalBtn').onclick=()=>document.getElementById('modalBg').classList.remove('show');
+  document.getElementById('saveVehBtn').onclick=saveVehicle;
+  document.getElementById('selfieBtn').onclick=()=>document.getElementById('vSelfieImg').click();
+  document.getElementById('vSelfieImg').onchange=(e)=>{
+    const f=e.target.files[0];const prev=document.getElementById('selfiePreview');
+    if(f){prev.src=URL.createObjectURL(f);prev.style.display='block';document.getElementById('selfieBtn').textContent='📸 إعادة التصوير';}
+  };
+}
+function openVehModal(mode,v){
+  document.getElementById('vMode').value=mode;
+  document.getElementById('modalTitle').textContent=mode==='request'?'طلب إضافة مركبة':(v?'تعديل مركبة':'إضافة مركبة (أدمن)');
+  document.getElementById('vId').value=v?v.id:'';
+  document.getElementById('vName').value=v?v.ownerName:'';
+  document.getElementById('vPhone').value=v?v.phone:'';
+  document.getElementById('vAddr').value=v?v.address:'';
+  document.getElementById('vCard').value=v?v.idCard:'';
+  document.getElementById('vTypeSel').value=v?v.vehicleType:'tuktuk';
+  document.getElementById('vSelfieImg').value='';
+  document.getElementById('vSelfieImg').dataset.existing=v?(v.personalPhoto||v.vehiclePhoto||''):'';
+  document.getElementById('selfieBtn').textContent='📸 صور الآن';
+  const prevEl=document.getElementById('selfiePreview');
+  if(v&&(v.personalPhoto||v.vehiclePhoto)){prevEl.src=v.personalPhoto||v.vehiclePhoto;prevEl.style.display='block';}else{prevEl.style.display='none';prevEl.src='';}
+  document.getElementById('modalBg').classList.add('show');
+}
+
+/* ===== دالة التصغير المحسّنة: تدعم PNG شفاف + جودة قابلة للتحكم ===== */
+function readResizedImage(file,max,quality){
+  return new Promise(resolve=>{
+    if(!file){resolve(null);return;}
+    const img=new Image(),reader=new FileReader();
+    reader.onload=()=>{
+      img.onload=()=>{
+        const c=document.createElement('canvas');
+        const s=(max||160)/Math.max(img.width,img.height);
+        c.width=Math.max(1,Math.round(img.width*s));
+        c.height=Math.max(1,Math.round(img.height*s));
+        const ctx=c.getContext('2d');
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality='high';
+        ctx.clearRect(0,0,c.width,c.height);
+        ctx.drawImage(img,0,0,c.width,c.height);
+        const q=quality||0.85;
+        let out=c.toDataURL('image/png');
+        if(out.length>200000){
+          out=c.toDataURL('image/jpeg',q);
+        }
+        resolve(out);
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function playChime(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [660,880,1100].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=freq;o.connect(g);g.connect(ctx.destination);
+      const t=ctx.currentTime+i*0.11;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.25,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.28);
+      o.start(t);o.stop(t+0.3);
+    });
+  }catch(e){}
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+async function saveVehicle(){
+  const mode=document.getElementById('vMode').value,id=document.getElementById('vId').value;
+  const required=[['vName','اسم المالك'],['vPhone','رقم الهاتف / واتساب'],['vCard','رقم البطاقة']];
+  for(const[fid,label]of required){if(!document.getElementById(fid).value.trim()){alert('ينقص ملء حقل: '+label);return;}}
+  const selfieExisting=document.getElementById('vSelfieImg').dataset.existing||'';
+  if(!document.getElementById('vSelfieImg').files[0]&&!selfieExisting){alert('ينقص ملء حقل: صورة سيلفي واضحة للمركبة وصاحبها');return;}
+  const selfiePhoto=(await readResizedImage(document.getElementById('vSelfieImg').files[0],180,0.8))||selfieExisting;
+  const personalPhoto=selfiePhoto,vehiclePhoto=selfiePhoto;
+  const data={ownerName:document.getElementById('vName').value.trim(),phone:normPhone(document.getElementById('vPhone').value.trim()),address:document.getElementById('vAddr').value.trim(),idCard:document.getElementById('vCard').value.trim(),vehicleType:document.getElementById('vTypeSel').value,personalPhoto,vehiclePhoto};
+  if(mode==='request'){data.approvedAt=Date.now();await db.collection('vehicles').add(data);}
+  else if(id){await db.doc('vehicles/'+id).update(data);}
+  else{data.approvedAt=Date.now();await db.collection('vehicles').add(data);}
+  document.getElementById('modalBg').classList.remove('show');
+  ['vId','vName','vPhone','vAddr','vCard'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('vTypeSel').selectedIndex=0;
+  document.getElementById('vSelfieImg').value='';document.getElementById('vSelfieImg').dataset.existing='';
+  document.getElementById('selfieBtn').textContent='📸 صور الآن';
+  document.getElementById('selfiePreview').style.display='none';document.getElementById('selfiePreview').src='';
+  if(mode==='request'){localStorage.setItem('captain_is_owner','1');playChime();showToast('🎉 تم حفظ المركبة بالتطبيق');}
+}
+
+/* ===== Ticker Admin ===== */
+function wireTickerAdmin(){
+  document.querySelectorAll('.admin-tabs div').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('.admin-tabs div').forEach(x=>x.classList.toggle('on',x===t));
+    const a=t.dataset.a;
+    document.getElementById('adminMain').style.display=a==='main'?'block':'none';
+    document.getElementById('adminTicker').style.display=a==='tk'?'block':'none';
+    document.getElementById('adminIcons').style.display=a==='ic'?'block':'none';
+    if(a==='tk')fillTickerAdmin();
+    if(a==='ic')renderIconList();
+  });
+  const sp=document.getElementById('tkSpeed');
+  sp.oninput=()=>{document.getElementById('tkSpeedVal').textContent=sp.value;tickerCfg.speed=Number(sp.value);applyTicker();};
+  document.getElementById('tkText').oninput=e=>{tickerCfg.text=e.target.value||DEFAULT_TICKER;applyTicker();};
+  document.getElementById('tkSaveBtn').onclick=async()=>{
+    const text=document.getElementById('tkText').value.trim()||DEFAULT_TICKER,speed=Number(sp.value);
+    const ex=(DB.settings||[]).find(s=>s.id==='ticker');
+    if(ex){Object.assign(ex.data,{text,speed});}else{DB.settings.push({id:'ticker',data:{text,speed}});}
+    saveDB();notify('settings');document.getElementById('tkMsg').textContent='✅ تم حفظ الشريط وظهر لكل المستخدمين';
+  };
+  document.getElementById('tkResetBtn').onclick=()=>{tickerCfg={text:DEFAULT_TICKER,speed:5};fillTickerAdmin();applyTicker();document.getElementById('tkMsg').textContent='اضغط "حفظ" لتثبيت النص الأصلي للجميع';};
+}
+
+/* ===== Icons Admin ===== */
+function wireIconsAdmin(){}
+function renderIconList(){
+  const wrap=document.getElementById('iconList');wrap.innerHTML='';
+  Object.entries(VTYPES).forEach(([key,v])=>{
+    const row=document.createElement('div');row.className='icon-row';
+    const has=customIcons[key];
+    row.innerHTML=`<div class="prev">${has?`<img src="${customIcons[key]}">`:v.icon}</div>
+      <div class="lbl">${v.label}<div class="small-note">${has?'✅ صورة مخصصة':'أيقونة افتراضية'}</div></div>
+      <div class="acts">
+        <button class="up" data-a="up">📤 رفع صورة</button>
+        ${has?'<button class="rm" data-a="rm">🗑️ إزالة</button>':''}
+      </div>`;
+    row.querySelector('[data-a="up"]').onclick=()=>{
+      const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+      inp.onchange=async(e)=>{
+        const f=e.target.files[0];if(!f)return;
+        document.getElementById('icMsg').textContent='⏳ جارِ معالجة الصورة...';
+        try{
+          const dataUrl=await readResizedImage(f,200,0.8);
+          customIcons[key]=dataUrl;
+          const ok=saveCustomIcons();
+          if(!ok){ delete customIcons[key]; document.getElementById('icMsg').textContent='❌ المساحة ممتلئة، احذف صوراً قديمة أولاً'; renderIconList(); return; }
+          renderIconList(); refreshSliderIcons();
+          const kb=Math.round(dataUrl.length*0.75/1024);
+          document.getElementById('icMsg').textContent='✅ تم تحديث أيقونة '+v.label+' (حجم: '+kb+' KB)';
+        }catch(err){
+          console.error(err);
+          document.getElementById('icMsg').textContent='❌ فشل معالجة الصورة';
+        }
+      };
+      inp.click();
+    };
+    const rm=row.querySelector('[data-a="rm"]');
+    if(rm) rm.onclick=()=>{ delete customIcons[key]; saveCustomIcons(); renderIconList(); refreshSliderIcons(); document.getElementById('icMsg').textContent='↩️ تم استرجاع أيقونة '+v.label+' الافتراضية'; };
+    wrap.appendChild(row);
+  });
+}
+
+/* ===== Main Admin ===== */
+function wireAdmin(){
+  document.getElementById('fabAdmin').onclick=()=>{document.getElementById('pwErr').textContent='';document.getElementById('pwInput').value='';document.getElementById('pwBg').classList.add('show');};
+  document.getElementById('pwCancelBtn').onclick=()=>document.getElementById('pwBg').classList.remove('show');
+  document.getElementById('pwOkBtn').onclick=()=>{
+    if(document.getElementById('pwInput').value===ADMIN_PW){document.getElementById('pwBg').classList.remove('show');document.getElementById('adminBg').classList.add('show');}
+    else document.getElementById('pwErr').textContent='كلمة مرور غير صحيحة';
+  };
+  document.getElementById('closeAdminBtn').onclick=()=>document.getElementById('adminBg').classList.remove('show');
+  document.getElementById('clearOrdersBtn').onclick=async()=>{
+    if(!confirm('هل أنت متأكد من مسح كل الطلبات نهائيًا؟'))return;
+    DB.orders=[];saveDB();notify('orders');
+  };
+}
+function subscribeAdmin(){
+  const renderOrders=()=>{
+    const wrap=document.getElementById('adminOrdersPanel');wrap.innerHTML='';
+    const docs=(DB.orders||[]).slice().sort((a,b)=>b.data.createdAt-a.data.createdAt).slice(0,300);
+    if(!docs.length)wrap.innerHTML='<div class="small-note">لا توجد طلبات.</div>';
+    docs.forEach(d=>{const o=d.data;
+      const el=document.createElement('div');el.className='order-item';
+      el.innerHTML=`<div class="route">${VTYPES[o.vehicleType]?.icon||''} ${o.from} ← ${o.to}</div>
+        <div class="meta">${o.approved?'✅ مقبول':'⏳ منتظر'} — ${new Date(o.createdAt).toLocaleString('ar-EG')}</div>
+        <button class="btn2 btn-danger" style="width:100%">🗑️ حذف نهائي</button>`;
+      el.querySelector('button').onclick=async()=>{if(confirm('حذف هذا الطلب نهائيًا؟')){DB.orders=DB.orders.filter(x=>x.id!==d.id);saveDB();notify('orders');}};
+      wrap.appendChild(el);
+    });
+  };
+  const renderVehicles=()=>{
+    const badge=document.getElementById('fabBadge');
+    const all=(DB.vehicles||[]);
+    if(all.length>0){badge.style.display='flex';badge.textContent=all.length>9?'9+':all.length;}else{badge.style.display='none';}
+    const wrap=document.getElementById('adminReqPanel');wrap.innerHTML='';
+    if(!all.length)wrap.innerHTML='<div class="small-note">لا توجد مركبات مسجلة حاليًا.</div>';
+    all.slice().sort((a,b)=>(b.data.approvedAt||0)-(a.data.approvedAt||0)).forEach(d=>{
+      const v={id:d.id,...d.data};
+      const el=document.createElement('div');el.className='order-item';
+      el.innerHTML=`<div class="row" style="display:flex;gap:8px;align-items:center">
+          <img class="thumb" src="${v.personalPhoto||''}"><b>${v.ownerName}</b> — ${VTYPES[v.vehicleType]?.label||''}
+        </div>
+        <div class="meta">${v.phone} — ${v.address||''} — بطاقة: ${v.idCard||''}</div>
+        <div class="req-row"><button class="btn2" data-a="e">✏️ تعديل</button><button class="btn2 btn-danger" data-a="d">🗑️ حذف</button></div>`;
+      el.querySelector('[data-a="e"]').onclick=()=>openVehModal('admin',v);
+      el.querySelector('[data-a="d"]').onclick=async()=>{if(confirm('حذف هذه المركبة؟')){DB.vehicles=DB.vehicles.filter(x=>x.id!==d.id);saveDB();notify('vehicles');}};
+      wrap.appendChild(el);
+    });
+  };
+  renderOrders();renderVehicles();
+  onSnap('orders',renderOrders);onSnap('vehicles',renderVehicles);
+}
+window.stopAlarm=stopAlarm;
+</script>
+</body>
+</html>
