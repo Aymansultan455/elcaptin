@@ -137,7 +137,7 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
     </div>
   </div>
   <div class="tabs">
-    <div class="tab active" data-p="req">📱 اطلب الخدمة</div>
+    <div class="tab active" data-p="req">📱 اطلب توصيلة</div>
     <div class="tab" data-p="cur">📋 الطلبات</div>
     <div class="tab" data-p="addveh">🚘 المركبات</div>
   </div>
@@ -156,13 +156,12 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
     <div class="field"><label>📍 مكانك الآن</label>
       <div class="row" style="align-items:flex-start"><input id="from" placeholder="اكتب موقعك أو استخدم GPS"><div style="display:flex;flex-direction:column;align-items:center"><button class="gps-btn" id="gpsBtn" type="button">تحديد GPS</button><span style="margin-top:3px;font-size:12px;font-weight:800;color:#e35f10">قريبا</span></div></div>
     </div>
-    <div class="field"><label>🎯 المكان المطلوب</label><input id="to" placeholder="اكتب وجهتك"></div>
-    <div class="field"><label>صفة المنقول</label>
+    <div class="field"><label>🎯 المكان المطلوب الوصول اليه</label><input id="to" placeholder="اكتب وجهتك"></div>
+    <div class="field"><label>نوع المنقول</label>
       <div class="seg" id="catSeg"><div class="on" data-c="people">👤 أشخاص</div><div data-c="goods">📦 بضائع</div></div>
     </div>
     <div class="field"><label>نوع المركبة</label><select id="vType"></select></div>
-    <div class="field"><label>💰 الأجرة المقترحة (أرقام فقط)</label><input id="fare" inputmode="numeric" placeholder="مثال: 50"></div>
-    <button class="btn" id="sendBtn">🚀 ارسل الطلب</button>
+    <button class="btn" id="sendBtn">🚀 ارسل الطلب الى اصحاب المركبات</button>
     <div class="small-note" id="sendStatus"></div>
   </div>
   <div id="responsesWrap"></div>
@@ -203,13 +202,12 @@ input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid va
     <input type="hidden" id="vId"><input type="hidden" id="vMode" value="request">
     <div class="field"><label>اسم المالك <span class="req-mark">(مطلوب)</span></label><input id="vName"></div>
     <div class="field"><label>رقم الهاتف / واتساب <span class="req-mark">(مطلوب)</span></label><input id="vPhone"></div>
-    <div class="field"><label>العنوان</label><input id="vAddr"></div>
-    <div class="field"><label>رقم البطاقة <span class="req-mark">(مطلوب)</span></label><input id="vCard"></div>
+    <div class="field"><label>رقم البطاقة <span class="small-note">(اختياري)</span></label><input id="vCard"></div>
     <div class="field"><label>نوع المركبة <span class="req-mark">(مطلوب)</span></label><select id="vTypeSel"></select></div>
-    <div class="field"><label>صورة سيلفي واضحة للمركبة وصاحبها <span class="req-mark">(مطلوب)</span></label>
+    <div class="field"><label>صورة سيلفي واضحة للمركبة وصاحبها <span class="small-note">(اختياري)</span></label>
       <input type="file" accept="image/*" capture="user" id="vSelfieImg" style="display:none">
       <button type="button" class="btn2" id="selfieBtn" style="width:100%">📸 صور الآن</button>
-      <img id="selfiePreview" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:10px;margin-top:8px">
+      <img id="selfiePreview" style="display:none;width:100%;height:320px;object-fit:cover;border-radius:10px;margin-top:8px">
     </div>
     <div class="actions-row">
       <button class="btn2" id="saveVehBtn" style="flex:1">حفظ</button>
@@ -284,11 +282,11 @@ loadCustomIcons();
 
 /* ===== Mock DB ===== */
 class MockDoc{
-  constructor(col,id,data){this.collection=col;this.id=id;this._data=data||{};this.path=col+'/'+id;}
+  constructor(col,id,data){this.colName=col;this.id=id;this._data=data||{};this.path=col+'/'+id;this.ref=this;}
   data(){return JSON.parse(JSON.stringify(this._data));}
-  async update(patch){Object.assign(this._data,patch);saveDB();notify(this.collection);}
-  async delete(){DB[this.collection]=(DB[this.collection]||[]).filter(d=>d.id!==this.id);saveDB();notify(this.collection);}
-  collection(name){return new MockCollection(this.collection+'_'+this.id+'_'+name);}
+  async update(patch){Object.assign(this._data,patch);saveDB();notify(this.colName);}
+  async delete(){DB[this.colName]=(DB[this.colName]||[]).filter(d=>d.id!==this.id);saveDB();notify(this.colName);}
+  collection(name){return new MockCollection(this.colName+'_'+this.id+'_'+name);}
 }
 class MockCollection{
   constructor(name){this.name=name;}
@@ -378,7 +376,6 @@ function filterVTypeByCat(){const sel=document.getElementById('vType');sel.inner
 
 function wireOrderForm(){
   document.getElementById('catSeg').onclick=(e)=>{const d=e.target.closest('div[data-c]');if(!d)return;currentCat=d.dataset.c;document.querySelectorAll('#catSeg div').forEach(x=>x.classList.toggle('on',x===d));filterVTypeByCat();};
-  document.getElementById('fare').oninput=(e)=>e.target.value=e.target.value.replace(/[^0-9]/g,'');
   document.getElementById('gpsBtn').onclick=()=>{
     if(!navigator.geolocation){alert('GPS غير متاح');return;}
     navigator.geolocation.getCurrentPosition(p=>{document.getElementById('from').value=`موقعي (${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)})`;},()=>alert('تعذر الوصول للموقع'));
@@ -387,24 +384,24 @@ function wireOrderForm(){
 }
 async function sendOrder(){
   const from=document.getElementById('from').value.trim(),to=document.getElementById('to').value.trim();
-  const vType=document.getElementById('vType').value,fare=document.getElementById('fare').value.trim();
+  const vType=document.getElementById('vType').value;
   const status=document.getElementById('sendStatus');
   if(!from||!to||!vType){status.textContent='من فضلك أكمل كل الحقول.';return;}
   status.textContent='...جارِ الإرسال';
   try{
-    const ref=await db.collection('orders').add({from,to,category:currentCat,vehicleType:vType,suggestedFare:fare||null,createdAt:Date.now(),status:'open'});
+    const ref=await db.collection('orders').add({from,to,category:currentCat,vehicleType:vType,suggestedFare:null,createdAt:Date.now(),status:'open'});
     localStorage.setItem('captain_last_order',ref.path);
     status.innerHTML='<div style="font-weight:900;color:var(--accent);margin-bottom:6px">✅ تم إرسال الطلب</div><button class="btn2" id="orderOkBtn">موافق</button>';
-    document.getElementById('orderOkBtn').onclick=()=>{document.getElementById('from').value='';document.getElementById('to').value='';document.getElementById('fare').value='';status.innerHTML='';};
+    document.getElementById('orderOkBtn').onclick=()=>{document.getElementById('from').value='';document.getElementById('to').value='';status.innerHTML='';};
     listenResponses(ref);
   }catch(e){status.textContent='حدث خطأ أثناء الإرسال.';console.error(e);}
 }
 function listenResponses(orderRef){
   if(respUnsub)respUnsub();
-  const wrap=document.getElementById('responsesWrap');wrap.innerHTML='<h3>ردود مالكي المركبات</h3>';
+  const wrap=document.getElementById('responsesWrap');wrap.innerHTML='';
   let first=true,count=0;
   respUnsub=orderRef.collection('responses').orderBy('createdAt','asc').onSnapshot(snap=>{
-    wrap.innerHTML='<h3>ردود مالكي المركبات</h3>';
+    wrap.innerHTML='';
     snap.docs.forEach((d,i)=>{
       const r=d.data();const vt=VTYPES[r.vehicleType];const el=document.createElement('div');el.className='resp';el.style.background=r.color||COLORS[i%COLORS.length];
       el.innerHTML=`<img src="${r.ownerPhoto||''}" onerror="this.style.display='none'"><div class="info">وافق على طلبك <b>${r.ownerName}</b><br>📞 ${r.phone||''}${vt?' — '+vt.label:''}${r.fare?'<br>باجرة <span class="fare">'+r.fare+' ج.م</span>':''}<div class="time">🕒 ${new Date(r.createdAt).toLocaleString('ar-EG')}</div></div><button>اوك</button>`;
@@ -472,7 +469,7 @@ function subscribePublicVehicles(){
   const render=()=>{
     const grid=document.getElementById('vehGrid');grid.innerHTML='';
     (DB.vehicles||[]).forEach((d,i)=>{const v=d.data;
-      grid.innerHTML+=`<div class="veh-card"><img src="${v.vehiclePhoto||''}" onerror="this.style.display='none'"><b>#${i+1} ${v.ownerName}</b><div class="small-note">${VTYPES[v.vehicleType]?.label||''}</div></div>`;
+      grid.innerHTML+=`<div class="veh-card"><img src="${v.vehiclePhoto||''}" onerror="this.style.display='none'"><b>#${i+1} ${v.ownerName}</b><div class="small-note">${VTYPES[v.vehicleType]?.label||''}</div><div class="small-note" dir="ltr">📞 ${v.phone||''}</div></div>`;
     });
   };
   render();onSnap('vehicles',render);
@@ -494,7 +491,6 @@ function openVehModal(mode,v){
   document.getElementById('vId').value=v?v.id:'';
   document.getElementById('vName').value=v?v.ownerName:'';
   document.getElementById('vPhone').value=v?v.phone:'';
-  document.getElementById('vAddr').value=v?v.address:'';
   document.getElementById('vCard').value=v?v.idCard:'';
   document.getElementById('vTypeSel').value=v?v.vehicleType:'tuktuk';
   document.getElementById('vSelfieImg').value='';
@@ -549,18 +545,17 @@ function playChime(){
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
 async function saveVehicle(){
   const mode=document.getElementById('vMode').value,id=document.getElementById('vId').value;
-  const required=[['vName','اسم المالك'],['vPhone','رقم الهاتف / واتساب'],['vCard','رقم البطاقة']];
+  const required=[['vName','اسم المالك'],['vPhone','رقم الهاتف / واتساب']];
   for(const[fid,label]of required){if(!document.getElementById(fid).value.trim()){alert('ينقص ملء حقل: '+label);return;}}
   const selfieExisting=document.getElementById('vSelfieImg').dataset.existing||'';
-  if(!document.getElementById('vSelfieImg').files[0]&&!selfieExisting){alert('ينقص ملء حقل: صورة سيلفي واضحة للمركبة وصاحبها');return;}
-  const selfiePhoto=(await readResizedImage(document.getElementById('vSelfieImg').files[0],180,0.8))||selfieExisting;
+  const selfiePhoto=(await readResizedImage(document.getElementById('vSelfieImg').files[0],360,0.8))||selfieExisting;
   const personalPhoto=selfiePhoto,vehiclePhoto=selfiePhoto;
-  const data={ownerName:document.getElementById('vName').value.trim(),phone:normPhone(document.getElementById('vPhone').value.trim()),address:document.getElementById('vAddr').value.trim(),idCard:document.getElementById('vCard').value.trim(),vehicleType:document.getElementById('vTypeSel').value,personalPhoto,vehiclePhoto};
+  const data={ownerName:document.getElementById('vName').value.trim(),phone:normPhone(document.getElementById('vPhone').value.trim()),address:'',idCard:document.getElementById('vCard').value.trim(),vehicleType:document.getElementById('vTypeSel').value,personalPhoto,vehiclePhoto};
   if(mode==='request'){data.approvedAt=Date.now();await db.collection('vehicles').add(data);}
   else if(id){await db.doc('vehicles/'+id).update(data);}
   else{data.approvedAt=Date.now();await db.collection('vehicles').add(data);}
   document.getElementById('modalBg').classList.remove('show');
-  ['vId','vName','vPhone','vAddr','vCard'].forEach(f=>document.getElementById(f).value='');
+  ['vId','vName','vPhone','vCard'].forEach(f=>document.getElementById(f).value='');
   document.getElementById('vTypeSel').selectedIndex=0;
   document.getElementById('vSelfieImg').value='';document.getElementById('vSelfieImg').dataset.existing='';
   document.getElementById('selfieBtn').textContent='📸 صور الآن';
@@ -670,7 +665,7 @@ function subscribeAdmin(){
       el.innerHTML=`<div class="row" style="display:flex;gap:8px;align-items:center">
           <img class="thumb" src="${v.personalPhoto||''}"><b>${v.ownerName}</b> — ${VTYPES[v.vehicleType]?.label||''}
         </div>
-        <div class="meta">${v.phone} — ${v.address||''} — بطاقة: ${v.idCard||''}</div>
+        <div class="meta">${v.phone}${v.idCard?' — بطاقة: '+v.idCard:''}</div>
         <div class="req-row"><button class="btn2" data-a="e">✏️ تعديل</button><button class="btn2 btn-danger" data-a="d">🗑️ حذف</button></div>`;
       el.querySelector('[data-a="e"]').onclick=()=>openVehModal('admin',v);
       el.querySelector('[data-a="d"]').onclick=async()=>{if(confirm('حذف هذه المركبة؟')){DB.vehicles=DB.vehicles.filter(x=>x.id!==d.id);saveDB();notify('vehicles');}};
